@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:sec="http://www.springframework.org/security/tags">
+<ui:composition template="layout.xhtml">
+    <ui:define name="content">
+        <h:form id="foodForm">
+            <p:panel header="Food Info" id="foodInfoPnl">
+                <h:panelGrid columns="2">
+                    <p:outputLabel for="name" value="Food Name: " />
+                    <p:inputText id="name" size="40"
+                                 value="#{foodController.foodUITO.foodName}" required="true"
+                                 requiredMessage="Please enter food name " />
+                    <p:outputLabel for="foodGrams" value="Grams: " />
+                    <p:inputText id="foodGrams" size="40"
+                                value="#{foodController.foodUITO.grams}" />
+                    <p:outputLabel for="foodCaloriesPerGram" value="Calories per gram : " />
+                    <p:inputText id="foodCaloriesPerGram"
+                                 value="#{foodController.foodUITO.caloriesPerGram}" size="40"
+                                 required="true" label="Calories per gram">
+                    </p:inputText>
+                    <p:outputLabel for="foodEatTime" value="Eat Time: " />
+                    <p:inputText id="foodEatTime" size="40"
+                                     value="#{foodController.foodUITO.eatTime}" />
+                    <p:outputLabel for="foodPerson" value="Person: " />
+
+                    <p:selectOneMenu id="foodPerson"
+                                     value="#{foodController.foodUITO.personUITO}"
+                                     style="width:150px" converter="#{personConverter}">
+                        <f:selectItems value="#{foodController.personUITOList}"
+                                       var="personUITO" itemLabel="#{personUITO.personName}"
+                                       itemValue="#{personUITO}" />
+
+                    </p:selectOneMenu>
+                    <h:commandButton value="#{foodController.actionLabel}"
+                                     action="#{foodController.doSaveInfoFood}">
+                        <f:ajax execute="foodForm" render="foodlist foodInfoPnl" />
+                    </h:commandButton>
+                </h:panelGrid>
+            </p:panel>
+            <p:panel header="Food List" id="foodlist">
+                <p:dataTable id="table" var="food"
+                             value="#{foodController.foodUITOList}">
+                    <p:column>
+                        <f:facet name="header"># Food Id</f:facet>
+                        <h:outputText value="#{food.foodId}" />
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">Name</f:facet>
+                        <h:outputText value="#{food.foodName}" />
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">Grams </f:facet>
+                        <h:outputText value="#{food.grams}">
+                        </h:outputText>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">Calories per gram </f:facet>
+                        <h:outputText value="#{food.caloriesPerGram}">
+                        </h:outputText>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">Eat Time </f:facet>
+                        <h:outputText value="#{food.eatTime}">
+                        </h:outputText>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">Person </f:facet>
+                        <h:outputText value="#{food.personUITO.personName}" />
+                    </p:column>
+                    <p:column id="action">
+                        <f:facet name="header">Action</f:facet>
+                        <h:commandLink value="Edit"
+                                       action="#{foodController.editFood(food)}">
+                            <f:ajax execute="action" render="foodForm" />
+                        </h:commandLink> /
+                        <sec:authorize access="hasRole('ROLE_ADMIN')">
+                            <h:commandLink value="Delete"
+                                           action="#{foodController.deleteFood(food)}">
+                                <f:ajax execute="action" render="table" />
+                            </h:commandLink>
+                        </sec:authorize>
+                    </p:column>
+
+                </p:dataTable>
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>
+</html>

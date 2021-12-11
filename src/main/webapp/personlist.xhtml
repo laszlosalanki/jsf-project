@@ -16,7 +16,7 @@
                         Expand rows to see detailed information
                     </f:facet>
                     <p:column style="width:2rem">
-                        <p:rowToggler/>
+                        <p:rowToggler />
                     </p:column>
 
                     <p:column headerText="Person Id">
@@ -32,15 +32,21 @@
                     </p:column>
 
                     <p:rowExpansion>
-                        <div class="person">
-                            <div class="person-list-item">
-                                <div class="person-list-detail">
-                                    <div class="person-id">#{person.personId}</div>
-                                    <div class="person-name">#{person.personName}</div>
-                                    <div class="person-age">#{person.personAge}</div>
-                                </div>
-                            </div>
-                        </div>
+                        <p:dataTable var="personFood" value="#{personController.getFoodByPerson(person.personId)}"
+                                     rowKey="#{personFood.foodId}">
+                            <p:column>
+                                <f:facet name="header">Food Name</f:facet>
+                                <h:outputText value="#{personFood.foodName}" />
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">Food Grams</f:facet>
+                                <h:outputText value="#{personFood.grams}" />
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">Food Calories per Gram</f:facet>
+                                <h:outputText value="#{personFood.caloriesPerGram}" />
+                            </p:column>
+                        </p:dataTable>
                     </p:rowExpansion>
                 </p:dataTable>
             </p:panel>
